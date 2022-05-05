@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  php-env:
+    build: .
+    volumes:
+      - "./.:/var/www/html"
+    ports:
+      - 9000:80
+  php:
+    image: php:7.4-fpm
+    volumes:
+      - "./.:/var/www/html"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - "./.:/var/www/html"
+      - "./docker/nginx/conf.d:/etc/nginx/conf.d"
+
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - PMA_ARBITRARY=1
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=mysql
